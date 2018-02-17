@@ -1,11 +1,9 @@
 #include "TXLib.h"
 #include "Chars.cpp"
 #include "Ñonstants.cpp"
- void GameOver (bool GameOver, player pers, player enemy, int screenH, int screenW);
-
+ void GameOver {bool GameOver, player pers, player enemy, int screenH, int screenW);
 int main()
 {
-    HDC GameOver = txLoadImage("GameOver.bmp");
     int screenW = GetSystemMetrics(SM_CXSCREEN);
     int screenH = GetSystemMetrics(SM_CYSCREEN);
     bool GameOver = false;
@@ -15,6 +13,7 @@ int main()
     int nWallD = 16;
     Player pers = {100, 100,116,117, 5, 2, 0, 100, 100, 10, 5, 1, txLoadImage("Stels pers.bmp")};
     Player enemy = {screenW-200, screenH-200,116,117, 3, 2, 0, 100, 100, 10, 5, 0, txLoadImage("enemy.bmp")};
+
     Wall dark[nWallD];
 
 
@@ -121,12 +120,11 @@ int main()
     return 0;
 }
 
-void GameOver (bool GameOver, player pers, player enemy, int screenH, int screenW){
+void GameOver {bool GameOver, player pers, player enemy, int screenH, int screenW){
     if (enemy.frame == 1){
-        txBitBlt (txDC(), 0, 0, 382, 112, GameOver , screenH/2, screenW/2);
-        txSleep(3000);
-        bool GameOver = true;
-
+        txBitBlt(
+        bool GameOver = true
+        
  }
 }
 
