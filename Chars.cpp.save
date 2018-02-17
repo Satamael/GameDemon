@@ -14,21 +14,11 @@ struct Player {
     int dmg;
     int aspeed;
     bool invise;
+    HDC pic;
     int x1;
     int y1;
 };
 
-x1, y1 - главный герой
-x2, y2 - тот, кто ищет
-
-if (x2 < x1)
-{
-    x2 = x2 + speed2;
-}
-else if (x2 > x1)
-{
-    x2 = x2 - speed2;
-}
 
 struct Wall {
     int x;
@@ -92,45 +82,51 @@ void StelsPerson(Player* pers, int screenW, int screenH)
     }
 }
 
-void Enemy(Player pers, Player* enemy, int screenW, int screenH){
-if (pers.x > enemy->x)
-{
-    enemy->x = enemy->x + enemy->speed;
-    enemy->frame = enemy->frame + 0.1;
-    enemy->direction = 4;
-}
-else if (pers.x < enemy.x)
-{
-    enemy.x = enemy.x - enemy.speed;
-    enemy->frame = enemy->frame + 0.1;
-    enemy.direction = 3;
+void Enemy(Player pers, Player* enemy, int screenW, int screenH) {
+    if (pers.x > enemy->x)
+    {
+        enemy->x = enemy->x + enemy->speed;
+        enemy->frame = enemy->frame + 0.1;
+        enemy->direction = 4;
+    }
+    else if (pers.x < enemy->x)
+    {
+        enemy->x = enemy->x - enemy->speed;
+        enemy->frame = enemy->frame + 0.1;
+        enemy->direction = 3;
+    }
 
-    if (pers.y > enemy.y)
-{
-    enemy.y = enemy.y + enemy.speed;
-    enemy->frame = enemy->frame + 0.1;
-    enemy.direction = 2;
-}
-else if (pers.y < enemy.y)
-{
-    enemy.x = enemy.y - enemy.speed;
-    enemy->frame = enemy->frame + 0.1;
-    enemy.direction = 1;
-}
-}
+    if (pers.y > enemy->y)
+    {
+        enemy->y = enemy->y + enemy->speed;
+        enemy->frame = enemy->frame + 0.1;
+        enemy->direction = 1;
+    }
+    else if (pers.y < enemy->y)
+    {
+        enemy->y = enemy->y - enemy->speed;
+        enemy->frame = enemy->frame + 0.1;
+        enemy->direction = 0;
+    }
+
 
     if (round(enemy->frame) > FRAME_KONEC_DVIZHENIA)
     {
          enemy->frame = FRAME_NACHALO_DVIZHENIA;
     }
 
-    if (enemy.x - pers.x > 70) and ()
+    if (abs(enemy->x - pers.x) < 70 and abs(enemy->y - pers.y) < 70)
     {
          enemy->frame = FRAME_WITH_KNIFE;
     }
-else if (round(enemy->frame) == FRAME_WITH_KNIFE)
+    else if (round(enemy->frame) == FRAME_WITH_KNIFE)
     {
          enemy->frame = FRAME_NACHALO_DVIZHENIA;
+    }
+
+    if (enemy->x==enemy->x1 and enemy->y==enemy->y1)
+    {
+         enemy->frame = FRAME_STOIT_ROVNO; // иф старое равно новое
     }
 }
 
@@ -147,11 +143,7 @@ void Wall_Push(int xWallD, int yWallD, int lengthWallD, int heightWallD, Player*
     }
 }
 
-/*если  x <= x1 <= x + dl
-если  x <= x1 + dl1 <= x + dl
-если  x1 <= x <= x1 + dl1
-если  x1 <= x + dl <= x1 + dl1
-то они столкнулись*/
+
 bool stolknovenie(int x, int y, int dl, int shir, int x1, int y1, int dl1, int shir1) {
 
     bool stolkn_po_x = false;

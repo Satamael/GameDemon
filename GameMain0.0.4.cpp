@@ -10,13 +10,12 @@ int main()
     srand(time(NULL));
 
     int nWallD = 7;
-    Player pers = {100, 100,116,117, 5, 2, 0, 100, 100, 10, 5, 1};
+    Player pers = {100, 100,116,117, 5, 2, 0, 100, 100, 10, 5, 1, txLoadImage("Stels pers.bmp")};
+    Player enemy = {screenW-200, screenH-200,116,117, 3, 2, 0, 100, 100, 10, 5, 0, txLoadImage("enemy.bmp")};
+
     Wall dark[nWallD];
 
-    Player enemy = {screenW-200, screenH-200,116,117, 3, 2, 0, 100, 100, 10, 5, 0};
 
-
-    HDC stelspers = txLoadImage("Stels pers.bmp");
 
     for (int nomer_steny = 0; nomer_steny < nWallD; nomer_steny++) {
 
@@ -96,8 +95,8 @@ int main()
         sprintf(health_string, "«доровье %d координаты %d %d  Ёкран %d  %d", pers.hp, pers.x, pers.y, screenW, screenH);
         txTextOut(screenW-500, screenH-100, health_string);
 
-        txTransparentBlt(txDC(), pers.x, pers.y, pers.pdl, pers.pshir, stelspers, pers.pdl * round(pers.frame), pers.pshir * pers.direction, RGB(255 , 255, 255));
-        txTransparentBlt(txDC(), enemy.x, enemy.y, enemy.pdl, enemy.pshir, stelspers, enemy.pdl * round(enemy.frame), enemy.pshir * enemy.direction, RGB(255 , 255, 255));
+        txTransparentBlt(txDC(), pers.x, pers.y, pers.pdl, pers.pshir, pers.pic, pers.pdl * round(pers.frame), pers.pshir * pers.direction, RGB(255 , 255, 255));
+        txTransparentBlt(txDC(), enemy.x, enemy.y, enemy.pdl, enemy.pshir, enemy.pic, enemy.pdl * round(enemy.frame), enemy.pshir * enemy.direction, RGB(255 , 255, 255));
 
 
         for (int nomer_steny = 0; nomer_steny < nWallD; nomer_steny++) {
@@ -111,7 +110,8 @@ int main()
         txSleep(20);
     }
 
-    txDeleteDC(stelspers);
+    txDeleteDC(pers.pic);
+    txDeleteDC(enemy.pic);
     for (int nomer_steny = 0; nomer_steny < nWallD; nomer_steny++) {
         txDeleteDC(dark[nomer_steny].pic);
     }

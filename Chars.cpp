@@ -14,6 +14,7 @@ struct Player {
     int dmg;
     int aspeed;
     bool invise;
+    HDC pic;
     int x1;
     int y1;
 };
@@ -86,26 +87,26 @@ void Enemy(Player pers, Player* enemy, int screenW, int screenH) {
     {
         enemy->x = enemy->x + enemy->speed;
         enemy->frame = enemy->frame + 0.1;
-        enemy->direction = 4;
+        enemy->direction = 3;
     }
     else if (pers.x < enemy->x)
     {
         enemy->x = enemy->x - enemy->speed;
         enemy->frame = enemy->frame + 0.1;
-        enemy->direction = 3;
+        enemy->direction = 2;
     }
 
     if (pers.y > enemy->y)
     {
         enemy->y = enemy->y + enemy->speed;
         enemy->frame = enemy->frame + 0.1;
-        enemy->direction = 2;
+        enemy->direction = 1;
     }
     else if (pers.y < enemy->y)
     {
         enemy->y = enemy->y - enemy->speed;
         enemy->frame = enemy->frame + 0.1;
-        enemy->direction = 1;
+        enemy->direction = 0;
     }
 
 
