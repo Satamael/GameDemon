@@ -1,0 +1,177 @@
+#include "TXLib.h"
+#include "Сonstants.cpp"
+
+struct Player {
+    int x;
+    int y;
+    int pshir;
+    int pdl;
+    int speed;
+    double frame;
+    int direction;
+    int hp;
+    int mp;
+    int dmg;
+    int aspeed;
+    bool invise;
+    int x1;
+    int y1;
+};
+
+
+struct Wall {
+    int x;
+    int y;
+    int length;
+    int height;
+    HDC pic;
+};
+
+void Wall_Push(int xWallD,int yWallD, int lengthWallD, int heightWallD, Player* pers, int screenW, int screenH);
+void StelsPerson(Player* pers, int screenW, int screenH);
+bool stolknovenie(int x, int y, int dl, int shir, int x1, int y1, int dl1, int shir1);
+void Enemy(Player* enemy, int screenW, int screenH);
+
+
+void StelsPerson(Player* pers, int screenW, int screenH)
+{
+    if (GetAsyncKeyState('W') && (pers->y >= 0)) {
+        pers->y = pers->y - pers->speed;
+        pers->frame = pers->frame + 0.1;
+        pers->direction = 0;
+    } else if (GetAsyncKeyState('S') && (pers->y <= screenH - 70)) {
+        pers->y = pers->y + pers->speed;
+        pers->frame = pers->frame + 0.1;
+        pers->direction = 1;
+    }
+
+    if (GetAsyncKeyState('A') && ( pers->x >= 0)){
+        pers->x = pers->x-pers->speed;
+        pers->frame = pers->frame + 0.1;
+        pers->direction = 2;
+    } else if (GetAsyncKeyState('D') && ( pers->x <= screenW - 70)){
+        pers->x = pers->x+pers->speed;
+        pers->frame = pers->frame + 0.1;  // коп мин на ен
+        pers->direction = 3;
+    }
+
+
+    if (round(pers->frame) > FRAME_KONEC_DVIZHENIA)
+    {
+         pers->frame = FRAME_NACHALO_DVIZHENIA;
+    }
+
+    if (GetAsyncKeyState(VK_SPACE))
+    {
+         pers->frame = FRAME_WITH_KNIFE;
+    }
+    else if (round(pers->frame) == FRAME_WITH_KNIFE)
+    {
+         pers->frame = FRAME_NACHALO_DVIZHENIA;
+    }
+
+    if (!GetAsyncKeyState(VK_SPACE) and
+        !GetAsyncKeyState('W')      and
+        !GetAsyncKeyState('S')      and
+        !GetAsyncKeyState('A')      and
+        !GetAsyncKeyState('D')
+       )
+    {
+         pers->frame = FRAME_STOIT_ROVNO; // иф старое равно новое
+    }
+}
+
+void Enemy(Player pers, Player* enemy, int screenW, int screenH) {
+    if (pers.x > enemy->x)
+    {
+        enemy->x = enemy->x + enemy->speed;
+        enemy->frame = enemy->frame + 0.1;
+        enemy->direction = 4;
+    }
+    else if (pers.x < enemy->x)
+    {
+        enemy->x = enemy->x - enemy->speed;
+        enemy->frame = enemy->frame + 0.1;
+        enemy->direction = 3;
+    }
+
+    if (pers.y > enemy->y)
+    {
+        enemy->y = enemy->y + enemy->speed;
+        enemy->frame = enemy->frame + 0.1;
+        enemy->direction = 2;
+    }
+    else if (pers.y < enemy->y)
+    {
+        enemy->y = enemy->y - enemy->speed;
+        enemy->frame = enemy->frame + 0.1;
+        enemy->direction = 1;
+    }
+
+
+    if (round(enemy->frame) > FRAME_KONEC_DVIZHENIA)
+    {
+         enemy->frame = FRAME_NACHALO_DVIZHENIA;
+    }
+
+    if (abs(enemy->x - pers.x) < 70 and abs(enemy->y - pers.y) < 70)
+    {
+         enemy->frame = FRAME_WITH_KNIFE;
+    }
+    else if (round(enemy->frame) == FRAME_WITH_KNIFE)
+    {
+         enemy->frame = FRAME_NACHALO_DVIZHENIA;
+    }
+
+    if (enemy->x==enemy->x1 and enemy->y==enemy->y1)
+    {
+         enemy->frame = FRAME_STOIT_ROVNO; // иф старое равно новое
+    }
+}
+
+
+void Wall_Push(int xWallD, int yWallD, int lengthWallD, int heightWallD, Player* pers, int screenW, int screenH)
+{
+    if (pers->x + 70 >= xWallD &&
+        pers->x + 20 <= xWallD + lengthWallD &&
+        pers->y + 70 >= yWallD &&
+        pers->y + 20 <= yWallD + heightWallD)
+    {
+        pers->x = pers->x1;
+        pers->y = pers->y1;
+    }
+}
+
+
+bool stolknovenie(int x, int y, int dl, int shir, int x1, int y1, int dl1, int shir1) {
+
+    bool stolkn_po_x = false;
+    bool stolkn_po_y = false;
+    bool stolkn = false;
+
+    if (
+        (x  <= x1           and x1          <= x + dl) or
+        (x  <= x1 + dl1     and x1 + dl1    <= x + dl) or
+        (x1 <= x            and x           <= x1 + dl1) or
+        (x1 <= x + dl       and x + dl      <= x1 + dl1))
+    {
+        stolkn_po_x = true;
+    }
+
+    if (
+        (y  <= y1           and y1          <= y + shir) or
+        (y  <= y1 + shir1   and y1 + shir1  <= y + dl) or
+        (y1 <= y            and y           <= y1 + shir1) or
+        (y1 <= y + shir     and y + shir    <= y1 + shir1))
+    {
+        stolkn_po_y = true;
+    }
+
+    if (stolkn_po_x && stolkn_po_y)
+    {
+        stolkn = true;
+    }
+
+    return stolkn;
+
+}
