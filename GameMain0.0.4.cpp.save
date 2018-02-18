@@ -1,19 +1,21 @@
 #include "TXLib.h"
 #include "Chars.cpp"
 #include "Ñonstants.cpp"
- void GameOver {bool GameOver, player pers, player enemy, int screenH, int screenW);
+ void FGameOver (bool GameOver, Player pers, Player enemy, int screenH, int screenW, HDC GameOverPic);
+
 int main()
 {
+
     int screenW = GetSystemMetrics(SM_CXSCREEN);
     int screenH = GetSystemMetrics(SM_CYSCREEN);
     bool GameOver = false;
     txCreateWindow(screenW, screenH);
+    HDC GameOverPic = txLoadImage("GameOver.bmp");
     srand(time(NULL));
 
     int nWallD = 16;
     Player pers = {100, 100,116,117, 5, 2, 0, 100, 100, 10, 5, 1, txLoadImage("Stels pers.bmp")};
     Player enemy = {screenW-200, screenH-200,116,117, 3, 2, 0, 100, 100, 10, 5, 0, txLoadImage("enemy.bmp")};
-
     Wall dark[nWallD];
 
 
@@ -80,6 +82,7 @@ int main()
 
     while (!GameOver)
     {
+        FGameOver (GameOver,pers,enemy,screenH,screenW,GameOverPic);
         txSetColor(TX_BLACK);
         txClear();
         txBegin();
@@ -109,22 +112,25 @@ int main()
 
         txEnd();
         txSleep(20);
+        
     }
 
     txDeleteDC(pers.pic);
     txDeleteDC(enemy.pic);
+    txDeleteDC(GameOverPic);
     for (int nomer_steny = 0; nomer_steny < nWallD; nomer_steny++) {
-        txDeleteDC(dark[nomer_steny].pic);
+    txDeleteDC(dark[nomer_steny].pic);
     }
 
     return 0;
 }
 
-void GameOver {bool GameOver, player pers, player enemy, int screenH, int screenW){
+void FGameOver (bool GameOver, Player pers, Player enemy, int screenH, int screenW, HDC GameOverPic){
     if (enemy.frame == 1){
-        txBitBlt(
-        bool GameOver = true
-        
+        bool GameOver = true;
+        txBitBlt (txDC(), 0, 0, 382, 112, GameOverPic, screenH/2, screenW/2);
+        txSleep(3000);
+
  }
 }
 

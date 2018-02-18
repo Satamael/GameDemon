@@ -80,8 +80,9 @@ int main()
 
 
 
-    while (!GameOver)
+    while (GameOver != true)
     {
+
         txSetColor(TX_BLACK);
         txClear();
         txBegin();
@@ -112,13 +113,14 @@ int main()
         txEnd();
         txSleep(20);
         FGameOver (GameOver,pers,enemy,screenH,screenW,GameOverPic);
+
     }
 
     txDeleteDC(pers.pic);
     txDeleteDC(enemy.pic);
     txDeleteDC(GameOverPic);
     for (int nomer_steny = 0; nomer_steny < nWallD; nomer_steny++) {
-        txDeleteDC(dark[nomer_steny].pic);
+    txDeleteDC(dark[nomer_steny].pic);
     }
 
     return 0;
