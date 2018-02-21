@@ -131,7 +131,8 @@ void Enemy(Player pers, Player* enemy, Player ally, int screenW, int screenH) {
 }
 
 void Ally(Player pers, Player enemy, Player* ally, int screenW, int screenH) {
-    if (pers.x > ally->x - ally->speed*2)
+
+    if (ally->x + ally->speed*2 < pers.x)
     {
         ally->x = ally->x + ally->speed;
         ally->frame = ally->frame + 0.1;
@@ -144,13 +145,13 @@ void Ally(Player pers, Player enemy, Player* ally, int screenW, int screenH) {
         ally->direction = 2;
     }
 
-    if (pers.y > ally->y - ally->speed*2)
+    if (pers.y > ally->y + ally->speed*2)
     {
         ally->y = ally->y + ally->speed;
         ally->frame = ally->frame + 0.1;
         ally->direction = 1;
     }
-    else if (pers.y < ally->y + ally->speed*2)
+    else if (pers.y < ally->y - ally->speed*2)
     {
         ally->y = ally->y - ally->speed;
         ally->frame = ally->frame + 0.1;

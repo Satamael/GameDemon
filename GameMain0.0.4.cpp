@@ -118,6 +118,18 @@ int main()
             txTransparentBlt(txDC(), dark[nomer_steny].x, dark[nomer_steny].y, dark[nomer_steny].length, dark[nomer_steny].height, dark[nomer_steny].pic, 0, 0, RGB(255 , 255, 255));
         }
 
+
+        txSetColor(TX_RED);
+        char str[100];
+        sprintf(str, "%d", ally.x);
+        txTextOut(100, 100, str);
+        sprintf(str, "%d", ally.y);
+        txTextOut(100, 200, str);
+        sprintf(str, "%d", ally.speed);
+        txTextOut(100, 300, str);
+        sprintf(str, "%d", ally.direction);
+        txTextOut(100, 400, str);
+
         txEnd();
         txSleep(20);
         FGameOver (&GameOver,pers,enemy,screenH,screenW,GameOverPicBad, 500);
