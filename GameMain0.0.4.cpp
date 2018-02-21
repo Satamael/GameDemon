@@ -10,8 +10,17 @@ int main()
     int screenH = GetSystemMetrics(SM_CYSCREEN);
     int finish;
     bool GameOver = false;
+    bool StartGame = false;
     txCreateWindow(screenW, screenH);
     HDC GameOverPicBad = txLoadImage("GameOver.bmp");
+    HDC menuEN = txLoadImage("menuEN.bmp");
+    HDC menuRU = txLoadImage("menuRU.bmp");
+    HDC prehistoryEN = txLoadImage("prehistoryEN.bmp");
+    HDC prehistoryRU= txLoadImage("prehistoryRU.bmp");
+    HDC TypesOfContractsRU= txLoadImage("ContractTypeRU.bmp");
+    HDC TypesOfContractsEN= txLoadImage("ContractTypeEN.bmp");
+    HDC AutorRU= txLoadImage("author.bmp");
+
     srand(time(NULL));
 
     int nWallD = 16;
@@ -82,6 +91,11 @@ int main()
 
 
 
+    while (StartGame != true)
+    {
+    txBitBlt (txDC(), 0, 0, 1920, 1065, menuEN, 0, 0);
+
+    if (StartGame==true){
     while (GameOver != true)
     {
 
@@ -134,6 +148,27 @@ int main()
         txSleep(20);
         FGameOver (&GameOver,pers,enemy,screenH,screenW,GameOverPicBad, 500);
 
+    }
+    }
+
+    if ((1210<=txMouseX()<=1820)&&(280<=txMouseY()<=380)&&(txMouseButtons() & 1){
+    StartGame=true;
+    }
+    if ((55<=txMouseX()<=212)&&(920<=txMouseY()<=1030)&&(txMouseButtons() & 1)){
+
+    /*про языки*/}
+
+    if ((1210<=txMouseX()<=1790)&&(435<=txMouseY()<=580)&&(txMouseButtons() & 1)){
+
+    /*Предыстория туториал*/}
+
+    if ((1160<=txMouseX()<=1820)&&(645<=txMouseY()<=750)&&(txMouseButtons() & 1)){
+
+    /*Скорость*/}
+
+    if ((1350<=txMouseX()<=1845)&&(870<=txMouseY()<=945)&&(txMouseButtons() & 1)){
+    txBitBlt (txDC(), 0, 0, 912, 446, Autor, 0, 0);
+    }
     }
 
     txDeleteDC(pers.pic);
