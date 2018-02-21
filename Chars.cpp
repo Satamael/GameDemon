@@ -29,12 +29,12 @@ struct Wall {
 };
 
 void Wall_Push(int xWallD,int yWallD, int lengthWallD, int heightWallD, Player* pers, int screenW, int screenH);
-void StelsPerson(Player* pers, int screenW, int screenH);
+void StelsPerson(Player* pers, Player ally, Player enemy, int screenW, int screenH);
 bool stolknovenie(int x, int y, int dl, int shir, int x1, int y1, int dl1, int shir1);
-void Enemy(Player* enemy, int screenW, int screenH);
+void Enemy(Player* enemy,Player pers, Player ally, int screenW, int screenH);
+void Ally(Player pers, Player enemy, Player* ally, int screenW, int screenH);
 
-
-void StelsPerson(Player* pers, int screenW, int screenH)
+void StelsPerson(Player* pers, Player ally, Player enemy, int screenW, int screenH)
 {
     if (GetAsyncKeyState('W') && (pers->y >= 0)) {
         pers->y = pers->y - pers->speed;
@@ -82,7 +82,7 @@ void StelsPerson(Player* pers, int screenW, int screenH)
     }
 }
 
-void Enemy(Player pers, Player* enemy, int screenW, int screenH) {
+void Enemy(Player pers, Player* enemy, Player ally, int screenW, int screenH) {
     if (pers.x > enemy->x)
     {
         enemy->x = enemy->x + enemy->speed;
@@ -130,6 +130,50 @@ void Enemy(Player pers, Player* enemy, int screenW, int screenH) {
     }
 }
 
+void Ally(Player pers, Player enemy, Player* ally, int screenW, int screenH) {
+    if (pers.x > ally->x - ally->speed*2)
+    {
+        ally->x = ally->x + ally->speed;
+        ally->frame = ally->frame + 0.1;
+        ally->direction = 3;
+    }
+    else if (pers.x < ally->x - ally->speed*2)
+    {
+        ally->x = ally->x - ally->speed;
+        ally->frame = ally->frame + 0.1;
+        ally->direction = 2;
+    }
+
+    if (pers.y > ally->y - ally->speed*2)
+    {
+        ally->y = ally->y + ally->speed;
+        ally->frame = ally->frame + 0.1;
+        ally->direction = 1;
+    }
+    else if (pers.y < ally->y + ally->speed*2)
+    {
+        ally->y = ally->y - ally->speed;
+        ally->frame = ally->frame + 0.1;
+        ally->direction = 0;
+    }
+
+
+    if (round(ally->frame) > FRAME_KONEC_DVIZHENIA)
+    {
+         ally->frame = FRAME_NACHALO_DVIZHENIA;
+    }
+
+    if (abs(ally->x - pers.x) < 70 and abs(ally->y - pers.y) < 70)
+    {
+         ally->frame = FRAME_STOIT_ROVNO;
+    }
+    else if (round(ally->frame) == FRAME_STOIT_ROVNO)
+    {
+         ally->frame = FRAME_NACHALO_DVIZHENIA;
+    }
+
+
+}
 
 void Wall_Push(int xWallD, int yWallD, int lengthWallD, int heightWallD, Player* pers, int screenW, int screenH)
 {
