@@ -25,6 +25,7 @@ HDC picmenu;
 HDC picautor;
 HDC picprehis;
 HDC pictypes;
+HDC picpause;
 };
 struct Wall {
     int x;
@@ -182,48 +183,3 @@ void Ally(Player pers, Player enemy, Player* ally, int screenW, int screenH) {
 
 }
 
-void Wall_Push(int xWallD, int yWallD, int lengthWallD, int heightWallD, Player* pers, int screenW, int screenH)
-{
-    if (pers->x + 70 >= xWallD &&
-        pers->x + 20 <= xWallD + lengthWallD &&
-        pers->y + 70 >= yWallD &&
-        pers->y + 20 <= yWallD + heightWallD)
-    {
-        pers->x = pers->x1;
-        pers->y = pers->y1;
-    }
-}
-
-
-bool stolknovenie(int x, int y, int dl, int shir, int x1, int y1, int dl1, int shir1) {
-
-    bool stolkn_po_x = false;
-    bool stolkn_po_y = false;
-    bool stolkn = false;
-
-    if (
-        (x  <= x1           and x1          <= x + dl) or
-        (x  <= x1 + dl1     and x1 + dl1    <= x + dl) or
-        (x1 <= x            and x           <= x1 + dl1) or
-        (x1 <= x + dl       and x + dl      <= x1 + dl1))
-    {
-        stolkn_po_x = true;
-    }
-
-    if (
-        (y  <= y1           and y1          <= y + shir) or
-        (y  <= y1 + shir1   and y1 + shir1  <= y + dl) or
-        (y1 <= y            and y           <= y1 + shir1) or
-        (y1 <= y + shir     and y + shir    <= y1 + shir1))
-    {
-        stolkn_po_y = true;
-    }
-
-    if (stolkn_po_x && stolkn_po_y)
-    {
-        stolkn = true;
-    }
-
-    return stolkn;
-
-}
