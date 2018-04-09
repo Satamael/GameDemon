@@ -1,11 +1,11 @@
 #include "TXLib.h"
 #include "Chars.cpp"
-#include "Сonstants.cpp"
+#include "Constants.cpp"
 #include <string>
 
 using namespace std;
- //ПОМОГИТЕ! Оно не работает. Сбился со скобками.
-//menu1 я пробросил во все функции (будет нехорошо, если при вызове менюшки из игры у тебя пропадет язык)
+ //ГЏГЋГЊГЋГѓГ€Г’Г…! ГЋГ­Г® Г­ГҐ Г°Г ГЎГ®ГІГ ГҐГІ. Г‘ГЎГЁГ«Г±Гї Г±Г® Г±ГЄГ®ГЎГЄГ Г¬ГЁ.
+//menu1 Гї ГЇГ°Г®ГЎГ°Г®Г±ГЁГ« ГўГ® ГўГ±ГҐ ГґГіГ­ГЄГ¶ГЁГЁ (ГЎГіГ¤ГҐГІ Г­ГҐГµГ®Г°Г®ГёГ®, ГҐГ±Г«ГЁ ГЇГ°ГЁ ГўГ»Г§Г®ГўГҐ Г¬ГҐГ­ГѕГёГЄГЁ ГЁГ§ ГЁГЈГ°Г» Гі ГІГҐГЎГї ГЇГ°Г®ГЇГ Г¤ГҐГІ ГїГ§Г»ГЄ)
 void FGameOver (bool* GameOver, Player* pers, Player* enemy, Player* ally,
                                 Player enemy_old, Player ally_old, Player pers_old,
                                 int screenH, int screenW, HDC GameOverPicBad, int finish,  bool* StartGame, menupics* menu1);
@@ -13,6 +13,7 @@ void Game ( Player pers, Player enemy, Player ally, bool GameOver, int screenH, 
 void menushka(Player* pers, bool* StartGame, bool* GameOver, menupics* menu1);
 void proSpeeds(Player* pers);
 void ProPre(menupics* menu1);
+void ProPause(menupics menu1);
 
 
 int main()
@@ -60,6 +61,7 @@ int main()
 
 
     if (StartGame==true) {
+        ProPause(menu1);
         Game (pers,enemy, ally, GameOver, screenH, screenW, &menu1);
     }
     txDeleteDC(pers.pic);
@@ -68,6 +70,7 @@ int main()
     txDeleteDC(menu1.picautor);
     txDeleteDC(menu1.picprehis);
     txDeleteDC(menu1.pictypes);
+    txDeleteDC(menu1.picpause);
 
     return 0;
 }
@@ -149,7 +152,7 @@ void Game (Player pers, Player enemy, Player ally, bool GameOver, int screenH, i
         int mapY =mapY+pers.y;
 
         char health_string[100];
-        sprintf(health_string, "Здоровье %d координаты %d %d  Экран %d  %d", pers.hp, pers.x, pers.y, screenW, screenH);
+        sprintf(health_string, "Г‡Г¤Г®Г°Г®ГўГјГҐ %d ГЄГ®Г®Г°Г¤ГЁГ­Г ГІГ» %d %d  ГќГЄГ°Г Г­ %d  %d", pers.hp, pers.x, pers.y, screenW, screenH);
         txTextOut(screenW-500, screenH-100, health_string);
 
         txTransparentBlt(txDC(), pers.x, pers.y, pers.pdl, pers.pshir, pers.pic, pers.pdl * round(pers.frame), pers.pshir * pers.direction, RGB(255 , 255, 255));
@@ -159,9 +162,9 @@ void Game (Player pers, Player enemy, Player ally, bool GameOver, int screenH, i
 
 
 
-        /*Сделай отдельной функцией. А ещё лучше заключи это все в if
-        (https://github.com/IngenerkaTeamCenter/SchoolEscape/blob/master/Lib/Director.cpp 151-158 строки
-         https://github.com/IngenerkaTeamCenter/SchoolEscape/blob/master/Lib/consmenu.cpp 16 строка)
+        /*Г‘Г¤ГҐГ«Г Г© Г®ГІГ¤ГҐГ«ГјГ­Г®Г© ГґГіГ­ГЄГ¶ГЁГҐГ©. ГЂ ГҐГ№Вё Г«ГіГ·ГёГҐ Г§Г ГЄГ«ГѕГ·ГЁ ГЅГІГ® ГўГ±ГҐ Гў if
+        (https://github.com/IngenerkaTeamCenter/SchoolEscape/blob/master/Lib/Director.cpp 151-158 Г±ГІГ°Г®ГЄГЁ
+         https://github.com/IngenerkaTeamCenter/SchoolEscape/blob/master/Lib/consmenu.cpp 16 Г±ГІГ°Г®ГЄГ )
         */
         txSetColor(TX_RED);
         char str[100];
@@ -174,17 +177,12 @@ void Game (Player pers, Player enemy, Player ally, bool GameOver, int screenH, i
         sprintf(str, "%d", ally.direction);
         txTextOut(100, 400, str);
 
-        HDC UPG=txLoadImage("menu/upgEN");
-        if (GetAsyncKeyState('P')){
-        while(!GetAsyncKeyState('P')){
-            txBitBlt (txDC(), 0, 0, 500, 300,menu1->picpause, 0, 0);
-            txSleep(10);
-            if (!GetAsyncKeyState('U')){
-            while(!GetAsyncKeyState(VK_BACK)){
-            txBitBlt (txDC(), 0, 0, 1024, 768,UPG, 0, 0);
-        }
-        }
+
+
         txEnd();
+
+
+
         FGameOver (&GameOver, &pers, &enemy, &ally,
                               enemy_old, ally_old, pers_old,
                               screenH,screenW,GameOverPicBad, 500, &StartGame, menu1);
@@ -259,10 +257,10 @@ void menushka(Player* pers, bool* StartGame, bool* GameOver,  menupics* menu1) {
 void proSpeeds(Player* pers){
 
             char ForSpeed[20];
-            sprintf(ForSpeed, "%d", pers->speed);//Эту строку я по пути потерял
+            sprintf(ForSpeed, "%d", pers->speed);//ГќГІГі Г±ГІГ°Г®ГЄГі Гї ГЇГ® ГЇГіГІГЁ ГЇГ®ГІГҐГ°ГїГ«
             const char* s =
-                txInputBox ("Enter speed/Введите скорость",
-                "Enter speed/Введите скорость", ForSpeed);
+                txInputBox ("Enter speed/Г‚ГўГҐГ¤ГЁГІГҐ Г±ГЄГ®Г°Г®Г±ГІГј",
+                "Enter speed/Г‚ГўГҐГ¤ГЁГІГҐ Г±ГЄГ®Г°Г®Г±ГІГј", ForSpeed);
             int speed = atoi(s);
             pers->speed = speed;
             }
@@ -285,10 +283,18 @@ void ProPre(menupics* menu1){
                 }
             }
                 }
-/*условие выхода
-Апгрейды менюшка
-если видимая
-если по у очень близки
-разность игрок стена
-Подгони под 1024 * 768
-*/
+void ProPause(menupics menu1){
+   HDC UPG=txLoadImage("menu/upgEN");
+   HDC picP = menu1.picpause;
+        if (GetAsyncKeyState('P')) {
+            while(!GetAsyncKeyState('P')) {
+                txBitBlt (txDC(), 0, 0, 500, 300,picP, 0, 0);
+                txSleep(10);
+                if (!GetAsyncKeyState('U')) {
+                    while(!GetAsyncKeyState(VK_BACK)) {
+                        txBitBlt (txDC(), 0, 0, 1024, 768,UPG, 0, 0);
+                    }
+                }
+            }
+        }
+}
