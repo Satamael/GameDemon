@@ -26,6 +26,7 @@ HDC picautor;
 HDC picprehis;
 HDC pictypes;
 HDC picpause;
+HDC picupg;
 };
 struct Wall {
     int x;
@@ -182,4 +183,4 @@ void Ally(Player pers, Player enemy, Player* ally, int screenW, int screenH) {
 
 
 }
-
+void NewWallPush(Player* pers) // YYYYYYYYYYYY

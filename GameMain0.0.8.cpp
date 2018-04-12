@@ -3,6 +3,8 @@
 #include "Constants.cpp"
 #include <string>
 
+int mapX = 0;
+
 using namespace std;
  //ÏÎÌÎÃÈÒÅ! Îíî íå ðàáîòàåò. Ñáèëñÿ ñî ñêîáêàìè.
 //menu1 ÿ ïðîáðîñèë âî âñå ôóíêöèè (áóäåò íåõîðîøî, åñëè ïðè âûçîâå ìåíþøêè èç èãðû ó òåáÿ ïðîïàäåò ÿçûê)
@@ -13,11 +15,12 @@ void Game ( Player pers, Player enemy, Player ally, bool GameOver, int screenH, 
 void menushka(Player* pers, bool* StartGame, bool* GameOver, menupics* menu1);
 void proSpeeds(Player* pers);
 void ProPre(menupics* menu1);
-void ProPause(menupics menu1);
+void ProPause(menupics* menu1);
 
 
 int main()
 {
+
     txDisableAutoPause();
     int screenW = GetSystemMetrics(SM_CXSCREEN);
     int screenH = GetSystemMetrics(SM_CYSCREEN);
@@ -26,7 +29,7 @@ int main()
     bool StartGame = false;
     bool Language = false;
     txCreateWindow(screenW, screenH);
-
+txSetFillColor(TX_BLACK);
 
 
 
@@ -35,14 +38,15 @@ int main()
     Player pers_old = pers;
     Player ally = {200, 200,116,117, 5, 2, 0, 100, 100, 10, 5, 1, txLoadImage("CharsPic/ally.bmp")};
     Player ally_old = ally;
-    Player enemy = {screenW-200, screenH-200,116,117, 3, 2, 0, 100, 100, 10, 5, 0, txLoadImage("CharsPic/enemy.bmp")};
+    Player enemy = {screenW+600, screenH-200,116,117, 3, 2, 0, 100, 100, 10, 5, 0, txLoadImage("CharsPic/enemy.bmp")};
     Player enemy_old = enemy;
 
     menupics menu1 = {  txLoadImage("menu/menuEN.bmp"),
                         txLoadImage("menu/author.bmp"),
                         txLoadImage("menu/prehistoryEN.bmp"),
                         txLoadImage("menu/ContractTypeEN.bmp"),
-                        txLoadImage("menu/pauseEN.bmp")};
+                        txLoadImage("menu/pauseEN.bmp"),
+                        txLoadImage("menu/UpgEN.bmp")};
 
 
 
@@ -61,7 +65,6 @@ int main()
 
 
     if (StartGame==true) {
-        ProPause(menu1);
         Game (pers,enemy, ally, GameOver, screenH, screenW, &menu1);
     }
     txDeleteDC(pers.pic);
@@ -71,6 +74,7 @@ int main()
     txDeleteDC(menu1.picprehis);
     txDeleteDC(menu1.pictypes);
     txDeleteDC(menu1.picpause);
+    txDeleteDC(menu1.picupg);
 
     return 0;
 }
@@ -145,17 +149,28 @@ void Game (Player pers, Player enemy, Player ally, bool GameOver, int screenH, i
         Ally(pers, enemy, &ally, screenW, screenH);
 
 
+        if (pers.x > mapSizeX-200)
+        {
+            pers.x = pers.x - pers.speed;
+        }
+
+       if (pers.y > mapSizeY-200)
+        {
+            pers.y = pers.y - pers.speed;
+        }
 
         txBitBlt(txDC(), 0, 0, mapSizeX, mapSizeY, Level, mapX, mapY);
 
-        int mapX =mapX+pers.x;
-        int mapY =mapY+pers.y;
+        mapX = pers.x - 200;
+        mapY = pers.y - 200;
+        //int mapX =mapX+pers.x;
+        //int mapY =mapY+pers.y;
 
         char health_string[100];
         sprintf(health_string, "Çäîðîâüå %d êîîðäèíàòû %d %d  Ýêðàí %d  %d", pers.hp, pers.x, pers.y, screenW, screenH);
         txTextOut(screenW-500, screenH-100, health_string);
 
-        txTransparentBlt(txDC(), pers.x, pers.y, pers.pdl, pers.pshir, pers.pic, pers.pdl * round(pers.frame), pers.pshir * pers.direction, RGB(255 , 255, 255));
+        txTransparentBlt(txDC(), pers.x - mapX, pers.y, pers.pdl, pers.pshir, pers.pic, pers.pdl * round(pers.frame), pers.pshir * pers.direction, RGB(255 , 255, 255));
         txTransparentBlt(txDC(), enemy.x, enemy.y, enemy.pdl, enemy.pshir, enemy.pic, enemy.pdl * round(enemy.frame), enemy.pshir * enemy.direction, RGB(255 , 255, 255));
         txTransparentBlt(txDC(), ally.x, ally.y, ally.pdl, ally.pshir, ally.pic, ally.pdl * round(ally.frame), ally.pshir * ally.direction, RGB(255 , 255, 255));
 
@@ -186,6 +201,7 @@ void Game (Player pers, Player enemy, Player ally, bool GameOver, int screenH, i
         FGameOver (&GameOver, &pers, &enemy, &ally,
                               enemy_old, ally_old, pers_old,
                               screenH,screenW,GameOverPicBad, 500, &StartGame, menu1);
+        ProPause(menu1);
         txSleep(20);
     }
 
@@ -223,11 +239,13 @@ void menushka(Player* pers, bool* StartGame, bool* GameOver,  menupics* menu1) {
                 menu1->picprehis = txLoadImage("menu/prehistoryEN.bmp");
                 menu1->pictypes = txLoadImage("menu/ContractTypeEN.bmp");
                 menu1->picpause = txLoadImage("menu/pauseEN.bmp");
+                menu1->picupg = txLoadImage("menu/UpgEN.bmp");
             } else {
                 menu1->picmenu = txLoadImage("menu/menuRU.bmp");
                 menu1->picprehis = txLoadImage("menu/prehistoryRU.bmp");
                 menu1->pictypes = txLoadImage("menu/ContractTypeRU.bmp");
                 menu1->picpause = txLoadImage("menu/pauseRU.bmp");
+                menu1->picupg = txLoadImage("menu/UpgRU.bmp");
             }
 
             Language = !Language;
@@ -256,45 +274,57 @@ void menushka(Player* pers, bool* StartGame, bool* GameOver,  menupics* menu1) {
 
 void proSpeeds(Player* pers){
 
-            char ForSpeed[20];
-            sprintf(ForSpeed, "%d", pers->speed);//Ýòó ñòðîêó ÿ ïî ïóòè ïîòåðÿë
-            const char* s =
-                txInputBox ("Enter speed/Ââåäèòå ñêîðîñòü",
-                "Enter speed/Ââåäèòå ñêîðîñòü", ForSpeed);
-            int speed = atoi(s);
-            pers->speed = speed;
+    char ForSpeed[20];
+    sprintf(ForSpeed, "%d", pers->speed);//Ýòó ñòðîêó ÿ ïî ïóòè ïîòåðÿë
+    const char* s =
+        txInputBox ("Enter speed/Ââåäèòå ñêîðîñòü",
+        "Enter speed/Ââåäèòå ñêîðîñòü", ForSpeed);
+    int speed = atoi(s);
+    pers->speed = speed;
+}
+
+void ProPre(menupics* menu1) {
+
+    bool ClosePrehistory = false;
+    while(!ClosePrehistory) {
+
+        txBitBlt (txDC(), 0, 0, 1024, 768,  menu1->picprehis, 0, 0);
+        if (GetAsyncKeyState(VK_BACK)) {
+            ClosePrehistory = true;
+        }
+
+        if (GetAsyncKeyState(VK_SPACE)){
+            while(!GetAsyncKeyState(VK_BACK)){
+                txBitBlt (txDC(), 0, 0, 1024, 768,  menu1->pictypes, 0, 0);
             }
+        }
+    }
+}
 
-void ProPre(menupics* menu1){
+void ProPause(menupics* menu1) {
+
+    if (GetAsyncKeyState('P')) {
+
+        HDC picP = menu1->picpause;
+        HDC UPG = menu1->picupg;
+        txSleep(1000);
+
+        while(!GetAsyncKeyState('P')) {
 
 
-            bool ClosePrehistory = false;
-            while(!ClosePrehistory) {
+            txClear();
+            txBitBlt (txDC(), 0, 0, 500, 300, picP, 0, 0);
+            txSleep(10);
 
-                txBitBlt (txDC(), 0, 0, 1024, 768,  menu1->picprehis, 0, 0);
-                if (GetAsyncKeyState(VK_BACK)) {
-                    ClosePrehistory = true;
-                }
-
-                if (GetAsyncKeyState(VK_SPACE)){
-                    while(!GetAsyncKeyState(VK_BACK)){
-                        txBitBlt (txDC(), 0, 0, 1024, 768,  menu1->pictypes, 0, 0);
-                    }
-                }
-            }
-                }
-void ProPause(menupics menu1){
-   HDC UPG=txLoadImage("menu/upgEN");
-   HDC picP = menu1.picpause;
-        if (GetAsyncKeyState('P')) {
-            while(!GetAsyncKeyState('P')) {
-                txBitBlt (txDC(), 0, 0, 500, 300,picP, 0, 0);
-                txSleep(10);
-                if (!GetAsyncKeyState('U')) {
-                    while(!GetAsyncKeyState(VK_BACK)) {
-                        txBitBlt (txDC(), 0, 0, 1024, 768,UPG, 0, 0);
-                    }
+            if (GetAsyncKeyState('U')) {
+                while(!GetAsyncKeyState(VK_BACK)) {
+                    txClear();
+                    txBitBlt (txDC(), 0, 0, 1024, 768, UPG, 0, 0);
+                    txSleep(10);
                 }
             }
         }
+        txSleep(1000);
+        //txDeleteDC(UPG);
+    }
 }
