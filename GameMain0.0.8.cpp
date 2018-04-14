@@ -5,6 +5,13 @@
 
 int mapX = 0;
 
+
+double inviseUp=0.1;
+int SoulHuntUp=0;
+int HPUp=0;
+int AllyHPUp=0;
+int Souls=9;
+
 using namespace std;
  //ÏÎÌÎÃÈÒÅ! Îíî íå ðàáîòàåò. Ñáèëñÿ ñî ñêîáêàìè.
 //menu1 ÿ ïðîáðîñèë âî âñå ôóíêöèè (áóäåò íåõîðîøî, åñëè ïðè âûçîâå ìåíþøêè èç èãðû ó òåáÿ ïðîïàäåò ÿçûê)
@@ -16,7 +23,7 @@ void menushka(Player* pers, bool* StartGame, bool* GameOver, menupics* menu1);
 void proSpeeds(Player* pers);
 void ProPre(menupics* menu1);
 void ProPause(menupics* menu1);
-
+void Upg(double* inviseUp,int* SoulHuntUp,int* HPUp, int* AllyHPUp, int* Souls, HDC UPG) ;
 
 int main()
 {
@@ -29,16 +36,16 @@ int main()
     bool StartGame = false;
     bool Language = false;
     txCreateWindow(screenW, screenH);
-txSetFillColor(TX_BLACK);
+    txSetFillColor(TX_BLACK);
 
 
 
 
-    Player pers = {100, 100, 116, 117, 5, 2, 0, 100, 100, 10, 5, 1, txLoadImage("CharsPic/Stels pers.bmp")};
+    Player pers = {100, 25, 116, 117, 5, 2, 0, 100, 100, 10, 5, 1, txLoadImage("CharsPic/Stels pers.bmp")};
     Player pers_old = pers;
-    Player ally = {200, 200,116,117, 5, 2, 0, 100, 100, 10, 5, 1, txLoadImage("CharsPic/ally.bmp")};
+    Player ally = {200, 50,116,117, 5, 2, 0, 100, 100, 10, 5, 1, txLoadImage("CharsPic/ally.bmp")};
     Player ally_old = ally;
-    Player enemy = {screenW+600, screenH-200,116,117, 3, 2, 0, 100, 100, 10, 5, 0, txLoadImage("CharsPic/enemy.bmp")};
+    Player enemy = {1745, 835,116,117, 3, 2, 0, 100, 100, 10, 5, 0, txLoadImage("CharsPic/enemy.bmp")};
     Player enemy_old = enemy;
 
     menupics menu1 = {  txLoadImage("menu/menuEN.bmp"),
@@ -126,10 +133,11 @@ void Game (Player pers, Player enemy, Player ally, bool GameOver, int screenH, i
     int nWallD = 16;
     HDC GameOverPicBad = txLoadImage("menu/GameOver.bmp");
     HDC Level = txLoadImage("Levels/Level1.bmp");
-        int mapSizeX = 1920;
-        int mapSizeY = 1066;
-        int mapX = 0;
-        int mapY = 0;
+    HDC LevelCheck = txLoadImage("Levels/Level11.bmp");
+    int mapSizeX = 1920;
+    int mapSizeY = 1066;
+    int mapX = 0;
+    int mapY = 0;
 
     while (GameOver != true)
     {
@@ -147,14 +155,15 @@ void Game (Player pers, Player enemy, Player ally, bool GameOver, int screenH, i
         StelsPerson(&pers, ally, enemy, screenW, screenH);
         Enemy(pers, &enemy, ally, screenW, screenH);
         Ally(pers, enemy, &ally, screenW, screenH);
+        NewWallPush(&pers, mapSizeX, mapSizeY, mapX, mapY, LevelCheck);
+        NewEnGo(&enemy,mapSizeX,mapSizeY,mapX,mapY, LevelCheck);
 
-
-        if (pers.x > mapSizeX-200)
+        if (mapX > mapSizeX+200)
         {
             pers.x = pers.x - pers.speed;
         }
 
-       if (pers.y > mapSizeY-200)
+        if (mapY > mapSizeY+200)
         {
             pers.y = pers.y - pers.speed;
         }
@@ -163,6 +172,7 @@ void Game (Player pers, Player enemy, Player ally, bool GameOver, int screenH, i
 
         mapX = pers.x - 200;
         mapY = pers.y - 200;
+        //fasthub - github for android
         //int mapX =mapX+pers.x;
         //int mapY =mapY+pers.y;
 
@@ -170,9 +180,9 @@ void Game (Player pers, Player enemy, Player ally, bool GameOver, int screenH, i
         sprintf(health_string, "Çäîðîâüå %d êîîðäèíàòû %d %d  Ýêðàí %d  %d", pers.hp, pers.x, pers.y, screenW, screenH);
         txTextOut(screenW-500, screenH-100, health_string);
 
-        txTransparentBlt(txDC(), pers.x - mapX, pers.y, pers.pdl, pers.pshir, pers.pic, pers.pdl * round(pers.frame), pers.pshir * pers.direction, RGB(255 , 255, 255));
-        txTransparentBlt(txDC(), enemy.x, enemy.y, enemy.pdl, enemy.pshir, enemy.pic, enemy.pdl * round(enemy.frame), enemy.pshir * enemy.direction, RGB(255 , 255, 255));
-        txTransparentBlt(txDC(), ally.x, ally.y, ally.pdl, ally.pshir, ally.pic, ally.pdl * round(ally.frame), ally.pshir * ally.direction, RGB(255 , 255, 255));
+        txTransparentBlt(txDC(), pers.x  - mapX, pers.y  - mapY, pers.pdl, pers.pshir, pers.pic, pers.pdl * round(pers.frame), pers.pshir * pers.direction, RGB(255 , 255, 255));
+        txTransparentBlt(txDC(), enemy.x - mapX, enemy.y - mapY, enemy.pdl, enemy.pshir, enemy.pic, enemy.pdl * round(enemy.frame), enemy.pshir * enemy.direction, RGB(255 , 255, 255));
+        txTransparentBlt(txDC(), ally.x  - mapX, ally.y  - mapY, ally.pdl, ally.pshir, ally.pic, ally.pdl * round(ally.frame), ally.pshir * ally.direction, RGB(255 , 255, 255));
 
 
 
@@ -311,7 +321,6 @@ void ProPause(menupics* menu1) {
 
         while(!GetAsyncKeyState('P')) {
 
-
             txClear();
             txBitBlt (txDC(), 0, 0, 500, 300, picP, 0, 0);
             txSleep(10);
@@ -319,7 +328,7 @@ void ProPause(menupics* menu1) {
             if (GetAsyncKeyState('U')) {
                 while(!GetAsyncKeyState(VK_BACK)) {
                     txClear();
-                    txBitBlt (txDC(), 0, 0, 1024, 768, UPG, 0, 0);
+                    Upg( &inviseUp, &SoulHuntUp, &HPUp, &AllyHPUp, &Souls,UPG);
                     txSleep(10);
                 }
             }
@@ -327,4 +336,23 @@ void ProPause(menupics* menu1) {
         txSleep(1000);
         //txDeleteDC(UPG);
     }
+}
+
+void Upg(double* inviseUp,int* SoulHuntUp,int* HPUp, int* AllyHPUp, int* Souls, HDC UPG){
+
+    txBitBlt (txDC(), 0, 0, 1024, 768, UPG, 0, 0);
+    char soul_string[100];
+    sprintf(soul_string, "%d", *Souls);
+    txTextOut (900, 75, soul_string);
+
+    txRectangle(220,90, 220+(*inviseUp) * 10*(320/5)+5,110);
+
+    if (505 <= txMouseX() && txMouseX() <= 600 &&
+         80 <= txMouseY() && txMouseY() <= 160 &&
+         txMouseButtons() & 1 && *Souls>0) {
+        *inviseUp = *inviseUp+0.1;
+        *Souls = *Souls - 1;
+        txSleep(100);
+    }
+    txSleep(100);
 }
