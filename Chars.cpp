@@ -212,89 +212,50 @@ void NewWallPush(Player* pers, int mapSizeX,int mapSizeY,int mapX,int mapY, HDC 
         }
     }
 } // YYYYYYYYYYYY
+
 void NewEnGo(Player* enemy, int mapSizeX,int mapSizeY,int mapX,int mapY, HDC LevelCheck){
+
     txBitBlt(txDC(), 0, 0, mapSizeX/10, mapSizeY/10, LevelCheck, 0, 0);
-    COLORREF CheckEnX = txGetPixel((enemy->x-1)/10, (enemy->y)/10);
-    COLORREF CheckEnY = txGetPixel((enemy->x)/10, (enemy->y-1)/10);
-    COLORREF CheckEnX1 = txGetPixel((enemy->x+1)/10, (enemy->y)/10);
-    COLORREF CheckEnY1 = txGetPixel((enemy->x)/10, (enemy->y+1)/10);
 
-    if (CheckEnX == RGB(237, 28, 36)){
-        enemy->x=enemy->x-1;
-        enemy->direction=2;
-        enemy->frame=enemy->frame+0.1;
+    //What is "CheckEnX"? "leftColor" better
+    COLORREF leftColor   = txGetPixel((enemy->x-10)/10, (enemy->y)   /10); //You divide by 10, so enemy->x + 10 (not 1)
+    COLORREF upColor     = txGetPixel((enemy->x)   /10, (enemy->y-10)/10);
+    COLORREF rightColor  = txGetPixel((enemy->x+10)/10, (enemy->y)   /10);
+    COLORREF bottomColor = txGetPixel((enemy->x)   /10, (enemy->y+10)/10);
+
+    //Constants make code simpler
+    const int UP = 0;
+    const int BOTTOM = 1;
+    const int LEFT = 2;
+    const int RIGHT = 3;
+
+    //Speed not always equals 1
+    const int speed = 1;
+
+    //Like in youtube
+    if (enemy->direction == LEFT) {
+
+        if (leftColor == RGB(237, 28, 36)) {
+            enemy->x = enemy->x - speed;
+            enemy->direction = LEFT;
+            enemy->frame = enemy->frame + 0.1;
+        } else if (upColor == RGB(237, 28, 36)) {
+            enemy->y = enemy->y - speed;
+            enemy->direction = UP;
+            enemy->frame = enemy->frame + 0.1;
+        } else if (bottomColor == RGB(237, 28, 36)) {
+            enemy->y = enemy->y + speed;
+            enemy->direction = BOTTOM;
+            enemy->frame = enemy->frame + 0.1;
+        }
+
+    } else if (enemy->direction == RIGHT) {
+
+
+    } else if (enemy->direction == BOTTOM) {
+
+
+    } else if (enemy->direction == UP) {
+
     }
-
-
-    else if(CheckEnY == RGB(237, 28, 36)){
-        enemy->y=enemy->y-1;
-         enemy->direction=0;
-         enemy->frame=enemy->frame+0.1;
-    }
-
-
-     else if(CheckEnX1 == RGB(237, 28, 36)){
-        enemy->x=enemy->x+1;
-         enemy->direction=3;
-         enemy->frame=enemy->frame+0.1;
-    }
-
-
-     else if(CheckEnY1 == RGB(237, 28, 36) && CheckEnX1 != RGB(237, 28, 36)){
-        enemy->y=enemy->y+1;
-         enemy->direction=1;
-         enemy->frame=enemy->frame+0.1;
-    }
-
-if (enemy->direction==2 && CheckEnX == RGB(237, 28, 36)){
-        enemy->x=enemy->x-1;
-         //enemy->direction=2;
-         enemy->frame=enemy->frame+0.1;
-} else if (enemy->direction==2 && CheckEnY == RGB(237, 28, 36)){
-        enemy->y=enemy->y-1;
-         enemy->direction=0;
-         enemy->frame=enemy->frame+0.1;
-}
-
- if (enemy->direction==0 && CheckEnY == RGB(237, 28, 36) && CheckEnX1 != RGB(237, 28, 36)){
-        enemy->y=enemy->y-1;
-         //enemy->direction=0;
-         enemy->frame=enemy->frame+0.1;
-} else if (enemy->direction==0 && CheckEnX1 == RGB(237, 28, 36)){
-        enemy->x=enemy->x+1;
-         enemy->direction=3;
-         enemy->frame=enemy->frame+0.1;
-}
-
-if (enemy->direction==3 && CheckEnX1 == RGB(237, 28, 36)){
-        enemy->x=enemy->x+1;
-         //enemy->direction=3;
-         enemy->frame=enemy->frame+0.1;
-} else if (enemy->direction==3 && CheckEnY1 == RGB(237, 28, 36) && CheckEnX1 != RGB(237, 28, 36) ){
-        enemy->y=enemy->y+1;
-         enemy->direction=1;
-         enemy->frame=enemy->frame+0.1;
-
-}
-
-if (enemy->direction==1 && CheckEnY1 == RGB(237, 28, 36)){
-        enemy->y=enemy->y+1;
-         //enemy->direction=1;
-         enemy->frame=enemy->frame+0.1;
-} else if (enemy->direction==1 && CheckEnX == RGB(237, 28, 36)){
-        enemy->y=enemy->x-1;
-         enemy->direction=2;
-         enemy->frame=enemy->frame+0.1;
-}
-
- if (enemy->direction==2 && CheckEnX == RGB(237, 28, 36)){
-        enemy->x=enemy->x-1;
-         //enemy->direction=2;
-         enemy->frame=enemy->frame+0.1;
-} else if (enemy->direction==2 && CheckEnY == RGB(237, 28, 36)){
-        enemy->y=enemy->y-1;
-         enemy->direction=0;
-         enemy->frame=enemy->frame+0.1;
-}
-
 }
