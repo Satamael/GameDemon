@@ -35,16 +35,26 @@ struct Wall {
     int height;
     HDC pic;
 };
+
+struct UPs{
+double inviseUp;
+int SoulHuntUp;
+int HPUp;
+int AllyHPUp;
+int Souls;
+};
+
+
 void NewWallPush(Player* pers,int mapSizeX,int mapSizeY,int mapX,int mapY, HDC LevelCheck);
 void Wall_Push(int xWallD,int yWallD, int lengthWallD, int heightWallD, Player* pers, int screenW, int screenH);
 void StelsPerson(Player* pers, Player ally, Player enemy, int screenW, int screenH);
 bool stolknovenie(int x, int y, int dl, int shir, int x1, int y1, int dl1, int shir1);
 void Enemy(Player* enemy,Player pers, Player ally, int screenW, int screenH);
-void Ally(Player pers, Player enemy, Player* ally, int screenW, int screenH);
+void Ally(Player pers, Player enemy,Player enemy2, Player* ally, int screenW, int screenH);
 void NewEnGo(Player* enemy, int mapSizeX,int mapSizeY,int mapX,int mapY, HDC LevelCheck);
+void NewEnGo2(Player* enemy, int mapSizeX,int mapSizeY,int mapX,int mapY, HDC LevelCheck);
 
-
-void StelsPerson(Player* pers, Player ally, Player enemy, int screenW, int screenH)
+void StelsPerson(Player* pers, Player ally, Player enemy, Player enemy2, int screenW, int screenH)
 {
     if (GetAsyncKeyState('W') && (pers->y >= 0)) {
         pers->y = pers->y - pers->speed;
@@ -132,7 +142,7 @@ void Enemy(Player pers, Player* enemy, Player ally, int screenW, int screenH) {
          enemy->frame = FRAME_NACHALO_DVIZHENIA;
     }
 
-    if (abs(enemy->x - pers.x) < 70 and abs(enemy->y - pers.y) < 70)
+    if (abs(enemy->x - pers.x) < 70 and abs(enemy->y - pers.y) < 70 or  (abs(enemy->x - pers.x)) < 70 and abs(enemy->y - pers.y)< 70)
     {
          enemy->frame = FRAME_WITH_KNIFE;
     }
@@ -143,7 +153,7 @@ void Enemy(Player pers, Player* enemy, Player ally, int screenW, int screenH) {
 
 }
 
-void Ally(Player pers, Player enemy, Player* ally, int screenW, int screenH) {
+void Ally(Player pers, Player enemy,Player enemy2, Player* ally, int screenW, int screenH) {
 
     if (ally->x + ally->speed*5 < pers.x)
     {
@@ -291,3 +301,4 @@ void NewEnGo(Player* enemy, int mapSizeX,int mapSizeY,int mapX,int mapY, HDC Lev
 
     }
 }
+
