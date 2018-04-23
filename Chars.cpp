@@ -27,6 +27,7 @@ HDC picprehis;
 HDC pictypes;
 HDC picpause;
 HDC picupg;
+HDC picchoose;
 };
 struct Wall {
     int x;
@@ -53,6 +54,7 @@ void Enemy(Player* enemy,Player pers, Player ally, int screenW, int screenH);
 void Ally(Player pers, Player enemy,Player enemy2, Player* ally, int screenW, int screenH);
 void NewEnGo(Player* enemy, int mapSizeX,int mapSizeY,int mapX,int mapY, HDC LevelCheck);
 void NewEnGo2(Player* enemy, int mapSizeX,int mapSizeY,int mapX,int mapY, HDC LevelCheck);
+void killing(Player* pers, Player* enemy, int kills);
 
 void StelsPerson(Player* pers, Player ally, Player enemy, Player enemy2, int screenW, int screenH)
 {
@@ -72,7 +74,7 @@ void StelsPerson(Player* pers, Player ally, Player enemy, Player enemy2, int scr
         pers->direction = 2;
     } else if (GetAsyncKeyState('D') && ( pers->x <= screenW - 70)){
         pers->x = pers->x+pers->speed;
-        pers->frame = pers->frame + 0.1;  // коп мин на ен
+        pers->frame = pers->frame + 0.1;
         pers->direction = 3;
     }
 
@@ -142,7 +144,7 @@ void Enemy(Player pers, Player* enemy, Player ally, int screenW, int screenH) {
          enemy->frame = FRAME_NACHALO_DVIZHENIA;
     }
 
-    if (abs(enemy->x - pers.x) < 70 and abs(enemy->y - pers.y) < 70 or  (abs(enemy->x - pers.x)) < 70 and abs(enemy->y - pers.y)< 70)
+    if (enemy->invise==false and abs(enemy->x - pers.x) < 70 and abs(enemy->y - pers.y) < 70 or  (abs(enemy->x - pers.x)) < 70 and abs(enemy->y - pers.y)< 70)
     {
          enemy->frame = FRAME_WITH_KNIFE;
     }
@@ -300,5 +302,29 @@ void NewEnGo(Player* enemy, int mapSizeX,int mapSizeY,int mapX,int mapY, HDC Lev
         }
 
     }
+}
+
+void killing(Player* pers, Player* enemy, int* kills){
+    const int UP = 0;
+    const int BOTTOM = 1;
+    const int LEFT = 2;
+    const int RIGHT = 3;
+
+ if(pers->direction==enemy->direction and (abs(enemy->x - pers->x) < 70 and abs(enemy->y - pers->y) < 70 or  (abs(enemy->x - pers->x)) < 70 and abs(enemy->y - pers->y)< 70)){
+ if (enemy->direction==UP and enemy->y<=pers->y and pers->frame==FRAME_WITH_KNIFE and enemy->invise==false){
+ enemy->invise= true;
+ kills= kills+1;
+ } else if (enemy->direction==BOTTOM and enemy->y>=pers->y and pers->frame==FRAME_WITH_KNIFE and enemy->invise==false){
+ enemy->invise= true;
+ kills= kills+1;
+ } else if (enemy->direction==RIGHT and enemy->x>=pers->x and pers->frame==FRAME_WITH_KNIFE and enemy->invise==false){
+ enemy->invise= true;
+ kills= kills+1;
+ }else if (enemy->direction==LEFT and enemy->x<=pers->x and pers->frame==FRAME_WITH_KNIFE and enemy->invise==false){
+ enemy->invise= true;
+ kills= kills+1;
+ }
+
+}
 }
 

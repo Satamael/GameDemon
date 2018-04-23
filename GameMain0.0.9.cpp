@@ -12,9 +12,9 @@ using namespace std;
 
 void FGameOver (bool* GameOver, Player* pers, Player* enemy, Player* enemy2,  Player enemy2_old, Player* ally,
                                 Player enemy_old, Player ally_old, Player pers_old,
-                                int screenH, int screenW, HDC win, HDC GameOverPicBad, int finish,  bool* StartGame, menupics* menu1, UPs* listt, int kills);
-void Game ( Player pers, Player enemy,Player enemy2, Player ally, bool GameOver, int screenH, int screenW, menupics* menu1,UPs* listt);
-void menushka(Player* pers, bool* StartGame, bool* GameOver, menupics* menu1);
+                                int screenH, int screenW, HDC win, HDC GameOverPicBad, int finish,  bool* StartGame, menupics* menu1, UPs* listt, int kills, bool* EnterIn, bool* Clean, bool* Protect);
+void Game ( Player pers, Player enemy,Player enemy2, Player ally, bool GameOver, int screenH, int screenW, menupics* menu1,UPs* listt, bool* EnterIn, bool* Clean, bool* Protect);
+void menushka(Player* pers, bool* StartGame, bool* GameOver,  menupics* menu1, bool* EnterIn, bool* Clean, bool* Protect);
 void proSpeeds(Player* pers);
 void ProPre(menupics* menu1);
 void ProPause(menupics* menu1, Player* pers,Player* pers_old,Player* ally, Player* ally_old,Player* enemy, UPs* listt);
@@ -31,6 +31,9 @@ int main()
     bool GameOver = false;
     bool StartGame = false;
     bool Language = false;
+    bool EnterIn;
+    bool Clean;
+    bool Protect;
     txCreateWindow(screenW, screenH);
     txSetFillColor(TX_BLACK);
 
@@ -39,7 +42,7 @@ int main()
 
     Player pers = {100, 25, 116, 117, 5, 2, 0, 50, 100, 10, 5, 1, txLoadImage("CharsPic/Stels pers.bmp")};
     Player pers_old = pers;
-    Player ally = {200, 50,116,117, 5, 2, 0, 50, 100, 10, 5, 1, txLoadImage("CharsPic/ally.bmp")};
+    Player ally = {200, 50,116,117, 1, 2, 0, 50, 100, 10, 5, 1, txLoadImage("CharsPic/ally.bmp")};
     Player ally_old = ally;
     Player enemy = {1740, 760,116,117, 3, 2, 0, 1, 100, 10, 5, 0, txLoadImage("CharsPic/enemy.bmp")};
     Player enemy_old = enemy;
@@ -51,7 +54,8 @@ int main()
                         txLoadImage("menu/prehistoryEN.bmp"),
                         txLoadImage("menu/ContractTypeEN.bmp"),
                         txLoadImage("menu/pauseEN.bmp"),
-                        txLoadImage("menu/UpgEN.bmp")};
+                        txLoadImage("menu/UpgEN.bmp"),
+                        txLoadImage("menu/ChooseContractTypeEN.bmp")};
 
 
 
@@ -60,7 +64,8 @@ int main()
 
     while (StartGame != true)
     {
-        menushka(&pers, &StartGame, &GameOver, &menu1);
+        menushka(&pers, &StartGame, &GameOver, &menu1, &EnterIn, &Clean, &Protect);
+
         if (GameOver)
         {
             return 0;
@@ -69,8 +74,9 @@ int main()
 
 
 
+
     if (StartGame==true) {
-        Game (pers,enemy, enemy2, ally, GameOver, screenH, screenW, &menu1,&listt);
+        Game (pers,enemy, enemy2, ally, GameOver, screenH, screenW, &menu1,&listt, &EnterIn, &Clean, &Protect);
     }
     txDeleteDC(pers.pic);
     txDeleteDC(enemy.pic);
@@ -82,28 +88,29 @@ int main()
     txDeleteDC(menu1.pictypes);
     txDeleteDC(menu1.picpause);
     txDeleteDC(menu1.picupg);
+    txDeleteDC(menu1.picchoose);
 
     return 0;
 }
 
 void FGameOver (bool* GameOver, Player* pers,        Player* enemy, Player* enemy2,  Player enemy2_old,   Player* ally,
                                 Player enemy_old,   Player ally_old,    Player pers_old,
-                                int screenH, int screenW, HDC win, HDC GameOverPicBad, int finish,  bool* StartGame, menupics* menu1,UPs* listt,int kills) {
+                                int screenH, int screenW, HDC win, HDC GameOverPicBad, int finish,  bool* StartGame, menupics* menu1,UPs* listt,int kills,bool EnterIn, bool Clean, bool Protect) {
  bool BackMenu = false;
 
-     if (enemy->frame == 1 and abs(enemy->x - pers->x) < 70 and abs(enemy->y - pers->y) < 70){
+     if (enemy->invise == false and enemy->frame == 1 and abs(enemy->x - pers->x) < 70 and abs(enemy->y - pers->y) < 70){
      pers->hp=pers->hp-1;
      }
 
-     if (enemy2->frame == 1 and abs(enemy2->x - pers->x) < 70 and abs(enemy2->y - pers->y) < 70){
+     if (enemy2->invise == false and enemy2->frame == 1 and abs(enemy2->x - pers->x) < 70 and abs(enemy2->y - pers->y) < 70){
      pers->hp=pers->hp-1;
      }
 
-    if (enemy->frame == 1 and abs(enemy->x - ally->x) < 70 and abs(enemy->y - ally->y) < 70){
+    if (enemy->invise == false and enemy->frame == 1 and abs(enemy->x - ally->x) < 70 and abs(enemy->y - ally->y) < 70){
      ally->hp=ally->hp-1;
      }
 
-     if (enemy2->frame == 1 and abs(enemy2->x - ally->x) < 70 and abs(enemy2->y - ally->y) < 70){
+     if (enemy2->invise == false and enemy2->frame == 1 and abs(enemy2->x - ally->x) < 70 and abs(enemy2->y - ally->y) < 70){
      ally->hp=ally->hp-1;
      }
 
@@ -132,13 +139,53 @@ void FGameOver (bool* GameOver, Player* pers,        Player* enemy, Player* enem
                 *enemy = enemy_old;
                 *enemy2 = enemy2_old;
                 *ally = ally_old;
-                menushka(pers, StartGame, GameOver, menu1);
+                menushka(pers, StartGame, GameOver, menu1, &EnterIn, &Clean, &Protect);
 
             }
             txSleep(10);
         }
 
-    } else if (txGetPixel((pers->x)/10, (pers->y)/10)==RGB(255,242,0)) {
+    } else if (EnterIn==true and txGetPixel((pers->x)/10, (pers->y)/10)==RGB(255,242,0)) {
+    *GameOver = true;
+
+    while(!BackMenu) {
+    txBitBlt (txDC(), screenW/2-161, screenH/2-56, 382, 112, win, 0, 0);
+    txSleep(10);
+    if (GetAsyncKeyState(VK_RETURN)) {
+                BackMenu = true;
+                *StartGame = false;
+                listt->Souls=listt->Souls+1+(kills+1*listt->SoulHuntUp);
+                txClear();
+                *pers = pers_old;
+                *enemy = enemy_old;
+                *enemy2 = enemy2_old;
+                *ally = ally_old;
+                menushka(pers, StartGame, GameOver, menu1, &EnterIn, &Clean, &Protect);
+            }
+            }
+
+
+    } else if (Protect==true and txGetPixel((ally->x)/10, (ally->y)/10)==RGB(255,242,0)) {
+    *GameOver = true;
+
+    while(!BackMenu) {
+    txBitBlt (txDC(), screenW/2-161, screenH/2-56, 382, 112, win, 0, 0);
+    txSleep(10);
+    if (GetAsyncKeyState(VK_RETURN)) {
+                BackMenu = true;
+                *StartGame = false;
+                listt->Souls=listt->Souls+1+(kills+1*listt->SoulHuntUp);
+                txClear();
+                *pers = pers_old;
+                *enemy = enemy_old;
+                *enemy2 = enemy2_old;
+                *ally = ally_old;
+                menushka(pers, StartGame, GameOver, menu1, &EnterIn, &Clean, &Protect);
+            }
+            }
+
+
+    }else if (Clean==true and kills==2) {
     *GameOver = true;
 
     while(!BackMenu) {
@@ -152,14 +199,21 @@ void FGameOver (bool* GameOver, Player* pers,        Player* enemy, Player* enem
                 *pers = pers_old;
                 *enemy = enemy_old;
                 *ally = ally_old;
-                menushka(pers, StartGame, GameOver, menu1);
+                menushka(pers, StartGame, GameOver, menu1, &EnterIn, &Clean, &Protect);
             }
             }
+
+
     }
  }
 
-void Game (Player pers, Player enemy,Player enemy2, Player ally, bool GameOver, int screenH, int screenW, menupics* menu1,UPs* listt) {
+void Game ( Player pers, Player enemy,Player enemy2, Player ally, bool GameOver, int screenH, int screenW, menupics* menu1,UPs* listt, bool* EnterIn, bool* Clean, bool* Protect) {
 
+    if(GameOver)
+    {EnterIn=false;
+    Clean=false;
+    Protect=false;
+    }
     int kills = 0;
     Player enemy_old = enemy;
     Player ally_old = ally;
@@ -195,11 +249,13 @@ void Game (Player pers, Player enemy,Player enemy2, Player ally, bool GameOver, 
         StelsPerson(&pers, ally, enemy,enemy2, screenW, screenH);
         Enemy(pers, &enemy, ally, screenW, screenH);
         Enemy(pers, &enemy2, ally, screenW, screenH);
+        killing(&pers, &enemy, &kills);
+        killing(&pers, &enemy2, &kills);
         Ally(pers, enemy,enemy2, &ally, screenW, screenH);
         NewWallPush(&pers, mapSizeX, mapSizeY, mapX, mapY, LevelCheck);
         FGameOver (&GameOver, &pers, &enemy, &enemy2, enemy2_old, &ally,
                               enemy_old, ally_old, pers_old,
-                              screenH,screenW, win, GameOverPicBad, 500, &StartGame, menu1,listt,kills);
+                              screenH,screenW, win, GameOverPicBad, 500, &StartGame, menu1,listt,kills,  &EnterIn, &Clean, &Protect);
         NewEnGo(&enemy,mapSizeX,mapSizeY,mapX,mapY, LevelCheck);
         NewEnGo(&enemy2,mapSizeX,mapSizeY,mapX,mapY, LevelCheck);
 
@@ -221,19 +277,26 @@ void Game (Player pers, Player enemy,Player enemy2, Player ally, bool GameOver, 
 
 
         txTransparentBlt(txDC(), pers.x  - mapX, pers.y  - mapY, pers.pdl, pers.pshir, pers.pic, pers.pdl * round(pers.frame), pers.pshir * pers.direction, RGB(255 , 255, 255));
+        if(enemy.invise==false){
         txTransparentBlt(txDC(), enemy.x - mapX, enemy.y - mapY, enemy.pdl, enemy.pshir, enemy.pic, enemy.pdl * round(enemy.frame), enemy.pshir * enemy.direction, RGB(255 , 255, 255));
+        }
+        if(enemy2.invise==false){
         txTransparentBlt(txDC(), enemy2.x - mapX, enemy2.y - mapY, enemy2.pdl, enemy2.pshir, enemy2.pic, enemy2.pdl * round(enemy2.frame), enemy2.pshir * enemy2.direction, RGB(255 , 255, 255));
+        }
+        if(*Protect==true){
         txTransparentBlt(txDC(), ally.x  - mapX, ally.y  - mapY, ally.pdl, ally.pshir, ally.pic, ally.pdl * round(ally.frame), ally.pshir * ally.direction, RGB(255 , 255, 255));
+        } else{
 
+        }
 
 
 
 
         txSetColor(TX_RED);
         char str[100];
-        sprintf(str, "%d", ally.hp);
+        sprintf(str, "%d", *Protect);
         txTextOut(100, 100, str);
-        sprintf(str, "%d", pers.hp);
+        sprintf(str, "%d", *EnterIn);
         txTextOut(100, 200, str);
 
 
@@ -254,7 +317,7 @@ void Game (Player pers, Player enemy,Player enemy2, Player ally, bool GameOver, 
 
 
 
-void menushka(Player* pers, bool* StartGame, bool* GameOver,  menupics* menu1) {
+void menushka(Player* pers, bool* StartGame, bool* GameOver,  menupics* menu1, bool* EnterIn, bool* Clean, bool* Protect) {
 
     bool Language = false;
 
@@ -268,13 +331,37 @@ void menushka(Player* pers, bool* StartGame, bool* GameOver,  menupics* menu1) {
 
         if (GetAsyncKeyState('Q')){
             *GameOver = true;
+
         }
 
         if (635 <= txMouseX() && txMouseX() <= 980 &&
             156 <= txMouseY() && txMouseY() <= 200 && txMouseButtons() & 1) {
-            *StartGame = true;
+            //txBitBlt (txDC(), 0, 0, 1024, 768, menu1->picchoose, 0, 0);
+            while(*StartGame != true and !GetAsyncKeyState(VK_BACK)){
+            txBitBlt (txDC(), 0, 0, 1024, 768, menu1->picchoose, 0, 0);
+            txSleep(10);
+            if(0 <= txMouseX() && txMouseX() <= 200 &&
+            0 <= txMouseY() && txMouseY() <= 500 && txMouseButtons() & 1){
+            *EnterIn=true;
+            *Clean=false;
+            *Protect=false;
+            *StartGame=true;
+            }else if(240 <= txMouseX() && txMouseX() <= 450 &&
+            0 <= txMouseY() && txMouseY() <= 500 && txMouseButtons() & 1){
+            *Clean=true;
+            *Protect=false;
+            *EnterIn=false;
+            *StartGame=true;
+            }else if(475 <= txMouseX() && txMouseX() <= 750 &&
+            0 <= txMouseY() && txMouseY() <= 500 && txMouseButtons() & 1){
+            *Protect=true;
+            *EnterIn=false;
+            *Clean=false;
+            *StartGame=true;
+            }
 
-        } else if ( 29 <= txMouseX() && txMouseX() <= 115 &&
+            }
+            }else if ( 29 <= txMouseX() && txMouseX() <= 115 &&
             657 <= txMouseY() && txMouseY() <= 716 && txMouseButtons() & 1) {
 
             if (!Language) {
@@ -283,12 +370,14 @@ void menushka(Player* pers, bool* StartGame, bool* GameOver,  menupics* menu1) {
                 menu1->pictypes = txLoadImage("menu/ContractTypeEN.bmp");
                 menu1->picpause = txLoadImage("menu/pauseEN.bmp");
                 menu1->picupg = txLoadImage("menu/UpgEN.bmp");
+                menu1->picchoose = txLoadImage("menu/ChooseContractTypeEN.bmp");
             } else {
                 menu1->picmenu = txLoadImage("menu/menuRU.bmp");
                 menu1->picprehis = txLoadImage("menu/prehistoryRU.bmp");
                 menu1->pictypes = txLoadImage("menu/ContractTypeRU.bmp");
                 menu1->picpause = txLoadImage("menu/pauseRU.bmp");
                 menu1->picupg = txLoadImage("menu/UpgRU.bmp");
+                menu1->picchoose = txLoadImage("menu/ChooseContractTypeRU.bmp");
             }
 
             Language = !Language;
@@ -312,16 +401,17 @@ void menushka(Player* pers, bool* StartGame, bool* GameOver,  menupics* menu1) {
         }
 
         txSleep(10);
+
     }
 }
 
 void proSpeeds(Player* pers){
 
     char ForSpeed[20];
-    sprintf(ForSpeed, "%d", pers->speed);//ÃÃ²Ã³ Ã±Ã²Ã°Ã®ÃªÃ³ Ã¿ Ã¯Ã® Ã¯Ã³Ã²Ã¨ Ã¯Ã®Ã²Ã¥Ã°Ã¿Ã«
+    sprintf(ForSpeed, "%d", pers->speed);
     const char* s =
-        txInputBox ("Enter speed/Ã‚Ã¢Ã¥Ã¤Ã¨Ã²Ã¥ Ã±ÃªÃ®Ã°Ã®Ã±Ã²Ã¼",
-        "Enter speed/Ã‚Ã¢Ã¥Ã¤Ã¨Ã²Ã¥ Ã±ÃªÃ®Ã°Ã®Ã±Ã²Ã¼", ForSpeed);
+        txInputBox ("Enter speed/Ââåäèòå ñêîðîñòü",
+        "Enter speed/Ââåäèòå ñêîðîñòü", ForSpeed);
     int speed = atoi(s);
     pers->speed = speed;
 }
