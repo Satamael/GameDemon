@@ -100,29 +100,31 @@ void StelsPerson(Player* pers, Player ally, Player enemy, Player enemy2, int scr
         !GetAsyncKeyState('D')
        )
     {
-         pers->frame = FRAME_STOIT_ROVNO; // иф старое равно новое
+         pers->frame = FRAME_STOIT_ROVNO;
     }
 }
 
-void Enemy(Player pers, Player* enemy, Player ally, int screenW, int screenH) {
+void Enemy(Player pers, Player* enemy, Player enemy_old, Player ally, int screenW, int screenH) {
 
 
-    /*if (pers.x > enemy->x)
+/*if(abs(enemy->x - pers.x) < 200 and abs(enemy->y - pers.y) < 200 or  (abs(enemy->x - pers.x)) < 200 and abs(enemy->y - pers.y)< 200){
+
+    if (pers.x > enemy->x)
     {
-        //enemy->x = enemy->x + enemy->speed;
+        enemy->x = enemy->x + enemy->speed;
         enemy->frame = enemy->frame + 0.1;
         enemy->direction = 3;
     }
     else if (pers.x < enemy->x)
     {
-        //enemy->x = enemy->x - enemy->speed;
+        enemy->x = enemy->x - enemy->speed;
         enemy->frame = enemy->frame + 0.1;
         enemy->direction = 2;
     }
 
     if (pers.y > enemy->y)
     {
-        //enemy->y = enemy->y + enemy->speed;
+        enemy->y = enemy->y + enemy->speed;
         enemy->frame = enemy->frame + 0.1;
         enemy->direction = 1;
     }
@@ -132,19 +134,15 @@ void Enemy(Player pers, Player* enemy, Player ally, int screenW, int screenH) {
         enemy->frame = enemy->frame + 0.1;
         enemy->direction = 0;
     }
-
-
-    txSetColor(TX_YELLOW);
-    char health_string[100];
-    sprintf(health_string, "%d  %d %d  %d", enemy->x, pers.x, enemy->y, pers.y);
-    txTextOut(300, 750, health_string);
+    }else{*enemy= enemy_old;}
     */
+
     if (round(enemy->frame) > FRAME_KONEC_DVIZHENIA)
     {
          enemy->frame = FRAME_NACHALO_DVIZHENIA;
     }
 
-    if (enemy->invise==false and abs(enemy->x - pers.x) < 70 and abs(enemy->y - pers.y) < 70 or  (abs(enemy->x - pers.x)) < 70 and abs(enemy->y - pers.y)< 70)
+    if (enemy->invise==false and abs(enemy->x - pers.x) < 70 and abs(enemy->y - pers.y) < 70 or  (abs(enemy->x - pers.x)) < 70 and abs(enemy->y - pers.y)< 70 and enemy->direction!=pers.direction)
     {
          enemy->frame = FRAME_WITH_KNIFE;
     }
@@ -152,6 +150,9 @@ void Enemy(Player pers, Player* enemy, Player ally, int screenW, int screenH) {
     {
          enemy->frame = FRAME_NACHALO_DVIZHENIA;
     }
+
+
+
 
 }
 
@@ -221,22 +222,21 @@ void NewEnGo(Player* enemy, int mapSizeX,int mapSizeY,int mapX,int mapY, HDC Lev
 
     txBitBlt(txDC(), 0, 0, mapSizeX/10, mapSizeY/10, LevelCheck, 0, 0);
 
-    //What is "CheckEnX"? "leftColor" better
-    COLORREF leftColor   = txGetPixel((enemy->x-10)/10, (enemy->y)   /10); //You divide by 10, so enemy->x + 10 (not 1)
+    COLORREF leftColor   = txGetPixel((enemy->x-10)/10, (enemy->y)   /10);
     COLORREF upColor     = txGetPixel((enemy->x)   /10, (enemy->y-10)/10);
     COLORREF rightColor  = txGetPixel((enemy->x+10)/10, (enemy->y)   /10);
     COLORREF bottomColor = txGetPixel((enemy->x)   /10, (enemy->y+10)/10);
 
-    //Constants make code simpler
+
     const int UP = 0;
     const int BOTTOM = 1;
     const int LEFT = 2;
     const int RIGHT = 3;
 
-    //Speed not always equals 1
+
     const int speed = enemy->speed;
 
-    //Like in youtube
+
     if (enemy->direction == LEFT) {
 
         if (leftColor == RGB(237, 28, 36)) {
