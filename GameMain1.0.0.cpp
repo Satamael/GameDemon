@@ -43,7 +43,7 @@ int main()
 
     Player pers = {100, 25, 116, 117, 5, 2, 0, 50, 100, 10, 5, 1, txLoadImage("CharsPic/Stels pers.bmp")};
     Player pers_old = pers;
-    Player ally = {200, 50,116,117, 1, 2, 0, 50, 100, 10, 5, 1, txLoadImage("CharsPic/ally.bmp")};
+    Player ally = {200, 50,116,117, 10, 2, 0, 50, 100, 10, 5, 1, txLoadImage("CharsPic/ally.bmp")};
     Player ally_old = ally;
     Player enemy = {1740, 760,116,117, 3, 2, 0, 1, 100, 10, 5, 0, txLoadImage("CharsPic/enemy.bmp")};
     Player enemy_old = enemy;
@@ -305,7 +305,10 @@ LevelCheck = txLoadImage("Levels/Level33.bmp");
         }
 
         txBitBlt(txDC(), 0, 0, mapSizeX, mapSizeY, Level, mapX, mapY);
-
+        txSetColor(TX_GREEN);
+        char HP_string[100];
+        sprintf(HP_string, "Demon HP %d  Ally HP %d", pers.hp, ally.hp);
+        txTextOut (800, 75, HP_string);
         mapX = pers.x - 200;
         mapY = pers.y - 200;
 
