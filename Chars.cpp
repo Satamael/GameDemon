@@ -1,5 +1,10 @@
 #include "TXLib.h"
 #include "Constants.cpp"
+#include <fstream>
+#include <iostream>
+#include <cstdio>
+
+using namespace std;
 
 struct Player {
     int x;
@@ -313,18 +318,77 @@ void killing(Player* pers, Player* enemy, int* kills){
  if(pers->direction==enemy->direction and (abs(enemy->x - pers->x) < 70 and abs(enemy->y - pers->y) < 70 or  (abs(enemy->x - pers->x)) < 70 and abs(enemy->y - pers->y)< 70)){
  if (enemy->direction==UP and enemy->y<=pers->y and pers->frame==FRAME_WITH_KNIFE and enemy->invise==false){
  enemy->invise= true;
- kills= kills+1;
+ *kills= *kills+1;
  } else if (enemy->direction==BOTTOM and enemy->y>=pers->y and pers->frame==FRAME_WITH_KNIFE and enemy->invise==false){
  enemy->invise= true;
- kills= kills+1;
+ *kills= *kills+1;
  } else if (enemy->direction==RIGHT and enemy->x>=pers->x and pers->frame==FRAME_WITH_KNIFE and enemy->invise==false){
  enemy->invise= true;
- kills= kills+1;
+ *kills= *kills+1;
  }else if (enemy->direction==LEFT and enemy->x<=pers->x and pers->frame==FRAME_WITH_KNIFE and enemy->invise==false){
  enemy->invise= true;
- kills= kills+1;
+ *kills= *kills+1;
  }
 
 }
 }
+
+void SetDefaultDataUPs(UPs *buf){ //устанавливаем дефолтные значния, если файла нет или он пуст
+    ifstream fp("UPs_File.txt");
+    if (!fp.is_open()){ // если файл не открыт
+        fp.close();
+        ifstream("UPs_File.txt"); //создаем файл
+        fp.close();
+        ofstream fp("UPs_File.txt");
+        fp << "0 0 0 0 5";
+
+        fp.close();
+        return;
+    }
+    if (fp.peek() == EOF){
+        fp.close();
+        remove( "UPs_File.txt.txt");
+        ifstream("UPs_File.txt"); //создаем файл
+        fp.close();
+        ofstream fp("UPs_File.txt");
+        fp << "0 0 0 0 5";
+
+        fp.close();
+        return;
+    }
+}
+
+void ReadUPs(UPs *buf){
+
+    SetDefaultDataUPs(buf);
+
+    ifstream fp("UPs_File.txt");
+
+
+    fp >> buf->inviseUp;
+    fp >> buf->SoulHuntUp;
+    fp >> buf->HPUp;
+    fp >> buf->AllyHPUp;
+    fp >> buf->Souls;
+
+    fp.close();
+    return;
+}
+
+
+void RecordUPs(UPs *buf){
+
+
+    ofstream fp("UPs_File.txt");
+
+    fp << buf->inviseUp << " ";
+    fp << buf->SoulHuntUp << " ";
+    fp << buf->HPUp << " ";
+    fp << buf->AllyHPUp << " ";
+    fp << buf->Souls;
+
+    fp.close();
+    return;
+}
+
 

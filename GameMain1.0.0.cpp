@@ -2,24 +2,31 @@
 #include "Chars.cpp"
 #include "Constants.cpp"
 #include <string>
+#include <cstdio>
+
 
 int mapX = 0;
 
 using namespace std;
 
-void FGameOver (bool* GameOver, Player* pers, Player* enemy, Player* enemy2,  Player enemy2_old, Player* ally,
-                                Player enemy_old, Player ally_old, Player pers_old,
-                                int screenH, int screenW, HDC win, HDC GameOverPicBad, int finish,  bool* StartGame, menupics* menu1, UPs* listt, int kills, bool* EnterIn, bool* Clean, bool* Protect);
+void FGameOver (bool* GameOver, Player* pers, Player* enemy, Player* enemy2,
+                Player enemy2_old, Player* ally,
+                Player enemy_old, Player ally_old, Player pers_old,
+                int screenH, int screenW, HDC win, HDC GameOverPicBad,
+                int finish,  bool* StartGame, menupics* menu1, UPs* listt,
+                int kills, bool* EnterIn, bool* Clean, bool* Protect);
+
 void Game ( Player pers, Player enemy,Player enemy2, Player ally, bool GameOver, int screenH, int screenW, menupics* menu1,UPs* listt, bool* EnterIn, bool* Clean, bool* Protect);
 void menushka(Player* pers, bool* StartGame, bool* GameOver,  menupics* menu1, bool* EnterIn, bool* Clean, bool* Protect);
 void proSpeeds(Player* pers);
 void ProPre(menupics* menu1);
 void ProPause(menupics* menu1, Player* pers,Player* pers_old,Player* ally, Player* ally_old,Player* enemy, UPs* listt);
 void Upg(UPs* listt, HDC UPG,Player* pers,Player* pers_old, Player* ally,Player* ally_old);
-
+void RecordUPs(struct UPs);
 
 int main()
 {
+
     txDisableAutoPause();
     int screenW = GetSystemMetrics(SM_CXSCREEN);
     int screenH = GetSystemMetrics(SM_CYSCREEN);
@@ -30,6 +37,7 @@ int main()
     bool EnterIn = false;
     bool Clean = false;
     bool Protect = false;
+
     txCreateWindow(screenW, screenH);
     txSetFillColor(TX_BLACK);
 
@@ -41,7 +49,11 @@ int main()
     Player enemy_old = enemy;
     Player enemy2 = {1600, 280,116,117, 3, 2, 2, 100, 100, 10, 5, 0, txLoadImage("CharsPic/enemy.bmp")};
     Player enemy2_old = enemy2;
-    UPs listt{0,0,0,0,25};
+
+    UPs* listt;
+    listt = new UPs;
+
+    ReadUPs(listt);
     menupics menu1 = {  txLoadImage("menu/menuEN.bmp"),
                         txLoadImage("menu/author.bmp"),
                         txLoadImage("menu/prehistoryEN.bmp"),
@@ -61,7 +73,7 @@ int main()
     }
 
     if (StartGame==true) {
-        Game (pers,enemy, enemy2, ally, GameOver, screenH, screenW, &menu1,&listt, &EnterIn, &Clean, &Protect);
+        Game (pers,enemy, enemy2, ally, GameOver, screenH, screenW, &menu1,listt, &EnterIn, &Clean, &Protect); //изменил 9 аргумент на указатель
     }
     txDeleteDC(pers.pic);
     txDeleteDC(enemy.pic);
@@ -74,6 +86,9 @@ int main()
     txDeleteDC(menu1.picpause);
     txDeleteDC(menu1.picupg);
     txDeleteDC(menu1.picchoose);
+
+    RecordUPs(listt);
+    delete listt;
 
     return 0;
 }
@@ -201,8 +216,49 @@ void Game ( Player pers, Player enemy,Player enemy2, Player ally, bool GameOver,
     int nWallD = 16;
     HDC GameOverPicBad = txLoadImage("menu/GameOver.bmp");
     HDC win = txLoadImage("menu/win.bmp");
-    HDC Level = txLoadImage("Levels/Level1.bmp");
-    HDC LevelCheck = txLoadImage("Levels/Level11.bmp");
+    HDC Level;
+    HDC LevelCheck;
+
+    srand(time(NULL));
+
+    int LevelNumber;
+    LevelNumber =random(3);
+
+    if (LevelNumber == 0)
+    {
+    Level = txLoadImage("Levels/Level1.bmp");
+    LevelCheck = txLoadImage("Levels/Level11.bmp");
+        enemy.x =1740;
+        enemy.y =760;
+        enemy_old=enemy;
+        enemy2.x =1600;
+        enemy2.y =280;
+        enemy2_old=enemy2;
+}
+else if (LevelNumber == 1)
+{
+Level = txLoadImage("Levels/Level2.bmp");
+LevelCheck = txLoadImage("Levels/Level22.bmp");
+    enemy.x =1590;
+    enemy.y =280;
+    enemy_old=enemy;
+    enemy2.x =870;
+    enemy2.y =750;
+    enemy2_old=enemy2;
+} else if (LevelNumber == 2)
+{
+Level = txLoadImage("Levels/Level3.bmp");
+LevelCheck = txLoadImage("Levels/Level33.bmp");
+    enemy.x =1650;
+    enemy.y =690;
+    enemy_old=enemy;
+    enemy2.x =1230;
+    enemy2.y =380;
+    enemy2_old=enemy2;
+
+
+}
+
     int mapSizeX = 1920;
     int mapSizeY = 1066;
     int mapX = 0;
